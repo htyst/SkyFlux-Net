@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#081623" />
+    <meta name="description" content="P10 太阳质子通量本地预测实验台" />
+    <title>HELIO LAB · 太阳质子通量预测实验台</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar" aria-label="主导航">
+        <a class="brand" href="#top" aria-label="HELIO LAB 首页">
+          <span class="brand-mark"><span></span></span>
+          <span class="brand-words"
+            ><strong>HELIO</strong><small>RESEARCH LAB</small></span
+          >
+        </a>
+
+        <div class="nav-label">工作空间</div>
+        <nav class="nav-list">
+          <a class="nav-link active" href="#top"
+            ><span class="nav-icon">◈</span> 总览
+            <span class="nav-arrow">↗</span></a
+          >
+          <a class="nav-link" href="#input"
+            ><span class="nav-icon">▤</span> 数据输入</a
+          >
+          <a class="nav-link" href="#results"
+            ><span class="nav-icon">⌁</span> 预测结果</a
+          >
+          <a class="nav-link" href="#method"
+            ><span class="nav-icon">◎</span> 模型说明</a
+          >
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="system-card">
+            <span class="system-top"
+              ><span class="pulse-dot"></span> 本地计算服务</span
+            >
+            <strong id="sidebar-model-count">正在检查模型…</strong>
+            <small>数据在本机处理，不自动上传</small>
+          </div>
+          <div class="side-foot">
+            P10 FORECAST WORKSPACE <span>·</span> v1.0
+          </div>
+        </div>
+      </aside>
+
+      <main id="top" class="main">
+        <header class="topbar">
+          <div class="breadcrumb">
+            研究工作台 <span>/</span> 太阳质子通量预测
+          </div>
+          <div class="topbar-right">
+            <span class="topbar-chip"
+              ><span class="chip-dot"></span> LOCAL PROTOTYPE</span
+            >
+            <span class="topbar-date" id="today-label"></span>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-grid"></div>
+            <div class="hero-copy">
+              <div class="eyebrow">
+                <span class="eyebrow-line"></span> SPACE WEATHER · EXPERIMENT 01
+              </div>
+              <h1 id="hero-title">从观测序列<br /><em>预见下一段通量</em></h1>
+              <p>
+                导入太阳风、地磁与粒子通量历史数据，对不同时间尺度的 P10
+                通量进行本地模型推理，并查看对应告警等级。
+              </p>
+              <div class="hero-actions">
+                <a class="button button-primary" href="#input"
+                  >开始一次预测 <span>↗</span></a
+                >
+                <button
+                  id="demo-button"
+                  class="button button-ghost"
+                  type="button"
+                >
+                  载入历史示例 <span>↗</span>
+                </button>
+              </div>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+              <div class="orbit orbit-one"></div>
+              <div class="orbit orbit-two"></div>
+              <div class="orbit orbit-three"></div>
+              <div class="sun-core"></div>
+              <span class="orbit-tag tag-a">P10 / FLUX</span>
+              <span class="orbit-tag tag-b">5 SCALES</span>
+              <span class="orbit-cross cross-a">+</span>
+              <span class="orbit-cross cross-b">+</span>
+            </div>
+            <div class="hero-footer">
+              <span>● 模型推理已就绪</span
+              ><span>观测 → 标准化 → 预测 → 告警</span><span>LOCAL / 001</span>
+            </div>
+          </section>
+
+          <section class="metrics-row" aria-label="平台概览">
+            <div class="metric-tile">
+              <span class="metric-icon mint">◈</span>
+              <div>
+                <small>预测模型</small><strong id="model-count">05</strong
+                ><span>个时间尺度</span>
+              </div>
+            </div>
+            <div class="metric-tile">
+              <span class="metric-icon blue">⌁</span>
+              <div>
+                <small>输入特征</small><strong>05</strong
+                ><span>通量与空间环境</span>
+              </div>
+            </div>
+            <div class="metric-tile">
+              <span class="metric-icon amber">◇</span>
+              <div>
+                <small>告警阈值</small><strong>10 / 100 / 1000</strong
+                ><span>pfu · 黄 / 橙 / 红</span>
+              </div>
+            </div>
+          </section>
+
+          <section
+            id="input"
+            class="workspace-section"
+            aria-labelledby="input-title"
+          >
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">01 / INPUT</span>
+                <h2 id="input-title">准备观测数据</h2>
+                <p>
+                  至少提供所选模型所需的连续历史窗口。你可以上传
+                  CSV，或直接粘贴数据。
+                </p>
+              </div>
+              <span class="section-index">DATA / 001</span>
+            </div>
+            <div class="work-grid">
+              <div class="panel input-panel">
+                <div class="panel-title-row">
+                  <h3>输入方式</h3>
+                  <span class="panel-badge">CSV · UTF-8</span>
+                </div>
+                <div class="segment-control" role="group" aria-label="预测模式">
+                  <button
+                    class="segment active"
+                    id="mode-auto"
+                    type="button"
+                    aria-pressed="true"
+                  >
+                    五分钟数据 · 多尺度
+                  </button>
+                  <button
+                    class="segment"
+                    id="mode-direct"
+                    type="button"
+                    aria-pressed="false"
+                  >
+                    单尺度数据
+                  </button>
+                </div>
+                <p class="mode-hint" id="mode-hint">
+                  导入连续的五分钟观测，平台将按完整时间区间聚合并尝试生成五个尺度的预测。
+                </p>
+                <div class="direct-options hidden" id="direct-options">
+                  <label class="field-label" for="resolution"
+                    >数据时间尺度</label
+                  >
+                  <select id="resolution" class="select-control">
+                    <option value="5min">5 分钟 · 至少 48 行</option>
+                    <option value="1h">1 小时 · 至少 24 行</option>
+                    <option value="2h">2 小时 · 至少 12 行</option>
+                    <option value="1d">1 天 · 至少 12 行</option>
+                    <option value="3d">3 天 · 至少 6 行</option>
+                  </select>
+                </div>
+                <label class="upload-zone" id="drop-zone" for="file-input">
+                  <input id="file-input" type="file" accept=".csv,text/csv" />
+                  <span class="upload-symbol">⇧</span>
+                  <strong id="upload-title">点击选择或拖入 CSV 文件</strong>
+                  <span id="upload-subtitle"
+                    >文件只在本机预测服务中处理 · 上限 24 MB</span
+                  >
+                  <span class="upload-link">浏览文件 <span>↗</span></span>
+                </label>
+                <div class="input-divider"><span>或粘贴 CSV 文本</span></div>
+                <label class="field-label" for="csv-input">观测序列</label>
+                <textarea
+                  id="csv-input"
+                  class="csv-input"
+                  spellcheck="false"
+                  placeholder="datetime,bulkspeed,kp,e2,p1,p10&#10;2025-02-20 01:00:00,420.5,2,340.1,0.52,0.18&#10;…"
+                ></textarea>
+                <div class="input-meta">
+                  <span id="data-meta">尚未选择数据</span
+                  ><span>列顺序可变，列名需一致</span>
+                </div>
+                <div class="settings-row">
+                  <label class="field-group"
+                    ><span class="field-label">时间戳时区</span
+                    ><select id="timezone" class="select-control">
+                      <option value="UTC">UTC</option>
+                      <option value="Asia/Shanghai">北京时间 UTC+8</option>
+                    </select></label
+                  >
+                  <label class="checkbox-line"
+                    ><input id="historical" type="checkbox" /><span
+                      class="check-ui"
+                    ></span
+                    ><span
+                      >历史数据演示<br /><small>跳过数据过期检查</small></span
+                    ></label
+                  >
+                </div>
+                <button
+                  id="predict-button"
+                  class="button button-primary run-button"
+                  type="button"
+                >
+                  <span class="run-icon">▶</span> 运行预测
+                  <span class="run-arrow">↗</span>
+                </button>
+                <p
+                  id="form-status"
+                  class="form-status"
+                  role="status"
+                  aria-live="polite"
+                >
+                  等待输入数据
+                </p>
+              </div>
+
+              <div class="right-stack">
+                <div class="panel schema-panel">
+                  <div class="panel-title-row">
+                    <h3>数据结构</h3>
+                    <span class="panel-badge quiet">SCHEMA / 06</span>
+                  </div>
+                  <p>
+                    上传文件需要时间列和五个数值特征。模型使用过去的连续观测窗口，而不是单行数据。
+                  </p>
+                  <div class="schema-list">
+                    <span>datetime</span><span>bulkspeed</span><span>kp</span
+                    ><span>e2</span><span>p1</span><span>p10</span>
+                  </div>
+                  <div class="schema-note">
+                    <span>✦</span>
+                    <div>
+                      <strong>完整窗口检查</strong
+                      ><small
+                        >有缺测或未结束的聚合区间会被提示，不会悄悄补成连续数据。</small
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="panel horizon-panel">
+                  <div class="panel-title-row">
+                    <h3>可用预测尺度</h3>
+                    <span class="panel-badge quiet">MODEL SET / 05</span>
+                  </div>
+                  <div class="horizon-list">
+                    <div>
+                      <span>01</span><strong>5 分钟</strong
+                      ><small>48 条历史观测</small>
+                    </div>
+                    <div>
+                      <span>02</span><strong>1 小时</strong
+                      ><small>24 条历史观测</small>
+                    </div>
+                    <div>
+                      <span>03</span><strong>2 小时</strong
+                      ><small>12 条历史观测</small>
+                    </div>
+                    <div>
+                      <span>04</span><strong>1 天</strong
+                      ><small>12 条历史观测</small>
+                    </div>
+                    <div>
+                      <span>05</span><strong>3 天</strong
+                      ><small>6 条历史观测</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section
+            id="results"
+            class="workspace-section results-section"
+            aria-labelledby="results-title"
+          >
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">02 / OUTPUT</span>
+                <h2 id="results-title">预测结果</h2>
+                <p>
+                  每个时间尺度独立推理，结果同时给出持续性参考值和告警等级。
+                </p>
+              </div>
+              <button
+                id="export-button"
+                class="text-button hidden"
+                type="button"
+              >
+                导出结果 CSV <span>↗</span>
+              </button>
+            </div>
+            <div id="results-empty" class="results-empty">
+              <div class="empty-orbit"><span>⌁</span></div>
+              <strong>等待第一次推理</strong>
+              <p>上传一份数据，或载入历史示例，结果会显示在这里。</p>
+            </div>
+            <div
+              id="result-cards"
+              class="result-cards hidden"
+              aria-live="polite"
+            ></div>
+            <div id="detail-panel" class="panel detail-panel hidden">
+              <div class="detail-top">
+                <div>
+                  <span class="section-kicker">SIGNAL DETAIL</span>
+                  <h3 id="detail-title">观测与预测</h3>
+                </div>
+                <div class="chart-legend">
+                  <span><i class="legend-history"></i> 历史 P10</span
+                  ><span><i class="legend-forecast"></i> 模型预测</span
+                  ><span><i class="legend-threshold"></i> 黄色阈值</span>
+                </div>
+              </div>
+              <div id="chart" class="chart-container"></div>
+              <div class="detail-bottom">
+                <span id="detail-time"></span
+                ><span>图形使用对数纵轴展示趋势</span>
+              </div>
+            </div>
+          </section>
+
+          <section id="method" class="method-strip">
+            <div class="method-icon">i</div>
+            <div>
+              <strong>研究用途提示</strong>
+              <p>
+                当前五个模型基于截至 2025 年 2
+                月的历史数据训练。多个短时尺度在独立测试集上未优于“沿用上一时段值”的简单基线；结果用于实验展示，不应直接作为正式预警依据。图像融合尚未接入。
+              </p>
+            </div>
+            <span>MODEL NOTE / 01</span>
+          </section>
+          <footer class="footer">
+            <span>HELIO RESEARCH LAB · P10 FORECAST</span
+            ><span>本地原型 / 数据不会自动传输到外部服务</span>
+          </footer>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
